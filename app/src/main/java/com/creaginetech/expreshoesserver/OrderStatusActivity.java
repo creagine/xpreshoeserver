@@ -7,18 +7,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.creaginetech.expreshoesserver.Common.Common;
 import com.creaginetech.expreshoesserver.Interface.ItemClickListener;
+import com.creaginetech.expreshoesserver.Model.MyResponse;
+import com.creaginetech.expreshoesserver.Model.Notification;
 import com.creaginetech.expreshoesserver.Model.Request;
+import com.creaginetech.expreshoesserver.Model.Sender;
+import com.creaginetech.expreshoesserver.Model.Token;
+import com.creaginetech.expreshoesserver.Remote.APIService;
 import com.creaginetech.expreshoesserver.ViewHolder.OrderViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OrderStatusActivity extends AppCompatActivity {
 
@@ -32,6 +46,8 @@ public class OrderStatusActivity extends AppCompatActivity {
 
     MaterialSpinner spinner;
 
+    APIService mService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +56,9 @@ public class OrderStatusActivity extends AppCompatActivity {
         //Firebase
         db = FirebaseDatabase.getInstance();
         requests = db.getReference("Requests");
+
+        //Init Service
+        mService = Common.getFCMClient();
 
         //Init
         recyclerView = (RecyclerView)findViewById(R.id.listOrders);
@@ -75,14 +94,14 @@ public class OrderStatusActivity extends AppCompatActivity {
                             Common.currentRequest = model;
                             startActivity(trackingOrder);
                         }
-                        else
-                        {
-                            Intent orderDetail = new Intent(OrderStatusActivity.this,OrderDetailActivity.class);
-                            Common.currentRequest = model;
-                            orderDetail.putExtra("OrderId",adapter.getRef(position).getKey());
-                            startActivity(orderDetail);
-                        }
-
+                        //cp 22 (47:10)
+//                        else
+//                        {
+//                            Intent orderDetail = new Intent(OrderStatusActivity.this,OrderDetailActivity.class);
+//                            Common.currentRequest = model;
+//                            orderDetail.putExtra("OrderId",adapter.getRef(position).getKey());
+//                            startActivity(orderDetail);
+//                        }
                     }
 
 
@@ -125,6 +144,9 @@ public class OrderStatusActivity extends AppCompatActivity {
                 item.setStatus(String.valueOf(spinner.getSelectedIndex()));
 
                 requests.child(localKey).setValue(item);
+
+                sendOrderStatusToUser(localKey,item);
+
             }
         });
         alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -135,6 +157,48 @@ public class OrderStatusActivity extends AppCompatActivity {
         });
 
         alertDialog.show();
+    }
+
+    private void sendOrderStatusToUser(final String key,final Request item) {
+        DatabaseReference tokens = db.getReference("Tokens");
+        tokens.orderByKey().equalTo(item.getPhone())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot postSnapShot:dataSnapshot.getChildren())
+                        {
+                            Token token = postSnapShot.getValue(Token.class);
+
+                            //Make raw payload
+                            Notification notification = new Notification("Expreshoes","Your order "+key+" was updated");
+                            Sender content = new Sender(token.getToken(),notification);
+
+                            mService.sendNotification(content)
+                                    .enqueue(new Callback<MyResponse>() {
+                                        @Override
+                                        public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                            if (response.code() == 200) {
+                                                if (response.body().success == 1) {
+                                                    Toast.makeText(OrderStatusActivity.this, "Order was updated !", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(OrderStatusActivity.this, "Order was updated but failed to send notification !", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<MyResponse> call, Throwable t) {
+                                            Log.e("ERROR",t.getMessage());
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     private void deleteOrder(String key) {

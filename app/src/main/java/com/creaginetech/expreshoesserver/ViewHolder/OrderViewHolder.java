@@ -9,7 +9,7 @@ import com.creaginetech.expreshoesserver.Interface.ItemClickListener;
 import com.creaginetech.expreshoesserver.R;
 
 public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener ,
-        View.OnLongClickListener,
+//        View.OnLongClickListener,
         View.OnCreateContextMenuListener{
     public TextView txtOrderId,txtOrderStatus,txtOrderPhone,txtOrderAddress;
 
@@ -24,7 +24,7 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
         txtOrderPhone = (TextView)itemView.findViewById(R.id.order_phone);
 
         itemView.setOnClickListener(this);
-        itemView.setOnLongClickListener(this); //longclick on order ->> for show order detail
+//        itemView.setOnLongClickListener(this); //longclick on order ->> for show order detail
         itemView.setOnCreateContextMenuListener(this);
     }
 
@@ -46,9 +46,9 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     }
 
-    @Override
-    public boolean onLongClick(View view) {
-        itemClickListener.onClick(view,getAdapterPosition(),true);
-        return true;
-    }
+//    @Override
+//    public boolean onLongClick(View view) {
+//        itemClickListener.onClick(view,getAdapterPosition(),true);
+//        return true;
+//    }
 }

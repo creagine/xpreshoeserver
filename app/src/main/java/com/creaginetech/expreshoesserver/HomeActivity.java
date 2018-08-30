@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.creaginetech.expreshoesserver.Common.Common;
 import com.creaginetech.expreshoesserver.Interface.ItemClickListener;
 import com.creaginetech.expreshoesserver.Model.Category;
-import com.creaginetech.expreshoesserver.Service.ListenOrder;
+import com.creaginetech.expreshoesserver.Model.Token;
 import com.creaginetech.expreshoesserver.ViewHolder.MenuViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -123,10 +124,17 @@ public class HomeActivity extends AppCompatActivity
 
         loadMenu();
 
-        //Call service
-        Intent service = new Intent(HomeActivity.this, ListenOrder.class);
-        startService(service);
-        
+
+        //Send token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+    }
+
+    private void updateToken(String token) {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference tokens = db.getReference("Tokens");
+        Token data = new Token(token,true);
+        tokens.child(Common.currentUser.getPhone()).setValue(data);
     }
 
     private void showDialog() {

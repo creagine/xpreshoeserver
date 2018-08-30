@@ -7,6 +7,8 @@ import android.graphics.Paint;
 
 import com.creaginetech.expreshoesserver.Model.Request;
 import com.creaginetech.expreshoesserver.Model.User;
+import com.creaginetech.expreshoesserver.Remote.APIService;
+import com.creaginetech.expreshoesserver.Remote.FCMRetrofitClient;
 import com.creaginetech.expreshoesserver.Remote.IGeoCoordinates;
 import com.creaginetech.expreshoesserver.Remote.RetrofitClient;
 
@@ -23,6 +25,9 @@ public class Common {
 
     public static final String baseUrl = "https://maps.googleapis.com";
 
+    public static final String fcmUrl = "https://fcm.googleapis.com";
+
+
     public static String convertCodeToStatus(String code)
     {
         if(code.equals("0"))
@@ -33,9 +38,14 @@ public class Common {
             return "Shipped";
     }
 
+    public static APIService getFCMClient(){
+        return FCMRetrofitClient.getClient(fcmUrl).create(APIService.class);
+    }
+
     public static IGeoCoordinates getGeoCodeService(){
         return RetrofitClient.getClient(baseUrl).create(IGeoCoordinates.class);
     }
+
 
     public static Bitmap scaleBitmap(Bitmap bitmap,int newWidth,int newHeight)
     {
