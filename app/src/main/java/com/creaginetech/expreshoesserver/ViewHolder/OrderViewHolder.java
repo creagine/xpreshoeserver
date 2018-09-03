@@ -3,17 +3,18 @@ package com.creaginetech.expreshoesserver.ViewHolder;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.creaginetech.expreshoesserver.Interface.ItemClickListener;
 import com.creaginetech.expreshoesserver.R;
 
-public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener ,
-//        View.OnLongClickListener,
-        View.OnCreateContextMenuListener{
+public class OrderViewHolder extends RecyclerView.ViewHolder{
     public TextView txtOrderId,txtOrderStatus,txtOrderPhone,txtOrderAddress;
 
-    private ItemClickListener itemClickListener;
+    public Button btnEdit,btnRemove,btnDetail,btnDirection;
+
+
 
     public OrderViewHolder(View itemView) {
         super(itemView);
@@ -23,32 +24,9 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
         txtOrderStatus = (TextView)itemView.findViewById(R.id.order_status);
         txtOrderPhone = (TextView)itemView.findViewById(R.id.order_phone);
 
-        itemView.setOnClickListener(this);
-//        itemView.setOnLongClickListener(this); //longclick on order ->> for show order detail
-        itemView.setOnCreateContextMenuListener(this);
-    }
-
-    public void setItemClickListener(ItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    @Override
-    public void onClick(View view) {
-        itemClickListener.onClick(view,getAdapterPosition(),false);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-        contextMenu.setHeaderTitle("Select the Action");
-
-        contextMenu.add(0,0,getAdapterPosition(),"Update");
-        contextMenu.add(0,1,getAdapterPosition(),"Delete");
-
-    }
-
-//    @Override
-//    public boolean onLongClick(View view) {
-//        itemClickListener.onClick(view,getAdapterPosition(),true);
-//        return true;
-//    }
+        btnEdit = (Button)itemView.findViewById(R.id.btnEdit);
+        btnDetail = (Button)itemView.findViewById(R.id.btnDetail);
+        btnRemove = (Button)itemView.findViewById(R.id.btnRemove);
+        btnDirection = (Button)itemView.findViewById(R.id.btnDirection);
+  }
 }

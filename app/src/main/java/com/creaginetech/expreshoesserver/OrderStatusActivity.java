@@ -78,34 +78,45 @@ public class OrderStatusActivity extends AppCompatActivity {
                 requests
         ) {
             @Override
-            protected void populateViewHolder(OrderViewHolder viewHolder, final Request model, int position) {
+            protected void populateViewHolder(OrderViewHolder viewHolder, final Request model, final int position) {
                 viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
                 viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
                 viewHolder.txtOrderAddress.setText(model.getAddress());
                 viewHolder.txtOrderPhone.setText(model.getPhone());
 
-                viewHolder.setItemClickListener(new ItemClickListener() {
+
+                //New event button
+                viewHolder.btnEdit.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view, int position, boolean isLongClick) {
-                        if (!isLongClick)
-                        {
-                            //chapter 14 maps
-                            Intent trackingOrder = new Intent(OrderStatusActivity.this,TrackingOrderMapsActivity.class);
-                            Common.currentRequest = model;
-                            startActivity(trackingOrder);
-                        }
-                        //cp 22 (47:10)
-//                        else
-//                        {
-//                            Intent orderDetail = new Intent(OrderStatusActivity.this,OrderDetailActivity.class);
-//                            Common.currentRequest = model;
-//                            orderDetail.putExtra("OrderId",adapter.getRef(position).getKey());
-//                            startActivity(orderDetail);
-//                        }
+                    public void onClick(View view) {
+                        showUpdateDialog(adapter.getRef(position).getKey(),adapter.getItem(position));
                     }
+                });
 
+                viewHolder.btnRemove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteOrder(adapter.getRef(position).getKey());
+                    }
+                });
 
+                viewHolder.btnDetail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent orderDetail = new Intent(OrderStatusActivity.this,OrderDetailActivity.class);
+                            Common.currentRequest = model;
+                            orderDetail.putExtra("OrderId",adapter.getRef(position).getKey());
+                            startActivity(orderDetail);
+                    }
+                });
 
+                viewHolder.btnDirection.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent trackingOrder = new Intent(OrderStatusActivity.this,TrackingOrderMapsActivity.class);
+                        Common.currentRequest = model;
+                        startActivity(trackingOrder);
+                    }
                 });
 
             }
@@ -114,14 +125,6 @@ public class OrderStatusActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if (item.getTitle().equals(Common.UPDATE))
-            showUpdateDialog(adapter.getRef(item.getOrder()).getKey(),adapter.getItem(item.getOrder()));
-        else if (item.getTitle().equals(Common.DELETE))
-            deleteOrder(adapter.getRef(item.getOrder()).getKey());
-        return super.onContextItemSelected(item);
-    }
 
     private void showUpdateDialog(String key, final Request item) {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(OrderStatusActivity.this);
@@ -144,6 +147,7 @@ public class OrderStatusActivity extends AppCompatActivity {
                 item.setStatus(String.valueOf(spinner.getSelectedIndex()));
 
                 requests.child(localKey).setValue(item);
+                adapter.notifyDataSetChanged(); //Add to update item siza
 
                 sendOrderStatusToUser(localKey,item);
 
@@ -203,6 +207,7 @@ public class OrderStatusActivity extends AppCompatActivity {
 
     private void deleteOrder(String key) {
         requests.child(key).removeValue();
+        adapter.notifyDataSetChanged();
     }
 
 
