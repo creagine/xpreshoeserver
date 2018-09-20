@@ -42,21 +42,20 @@
         <activity
             android:name=".TrackingOrderMapsActivity"
             android:label="@string/title_activity_tracking_order_maps" />
-
-        <activity android:name=".OrderDetailActivity"></activity>
+        <activity android:name=".OrderDetailActivity" />
 
         <service android:name=".Service.MyFirebaseIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".Service.MyFirebaseMessaging">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
+        <activity android:name=".BannerActivity"></activity>
     </application>
 
 </manifest>

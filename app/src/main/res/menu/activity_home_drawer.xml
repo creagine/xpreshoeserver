@@ -4,6 +4,12 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_banner"
+            android:icon="@drawable/ic_laptop_black_24dp"
+            android:title="Banners" />
+
         <item
             android:id="@+id/nav_menu"
             android:icon="@drawable/ic_restaurant_black_24dp"
