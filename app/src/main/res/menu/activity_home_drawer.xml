@@ -11,6 +11,11 @@
             android:title="Banners" />
 
         <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/ic_message_black_24dp"
+            android:title="Send Message" />
+
+        <item
             android:id="@+id/nav_menu"
             android:icon="@drawable/ic_restaurant_black_24dp"
             android:title="Menu" />
