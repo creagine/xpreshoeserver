@@ -51,7 +51,8 @@
         </service>
 
         <activity android:name=".BannerActivity" />
-        <activity android:name=".SendMessageActivity"></activity>
+        <activity android:name=".SendMessageActivity" />
+        <activity android:name=".ShipperManagement"></activity>
     </application>
 
 </manifest>

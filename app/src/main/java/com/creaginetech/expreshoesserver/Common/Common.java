@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class Common {
+    public static final String SHIPPERS_TABLE = "Shippers";
     public static User currentUser;
     public static Request currentRequest;
 

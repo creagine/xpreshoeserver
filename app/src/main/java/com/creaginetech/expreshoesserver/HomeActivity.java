@@ -365,6 +365,10 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_message) {
             Intent orderIntent = new Intent(HomeActivity.this,SendMessageActivity.class);
             startActivity(orderIntent);
+
+        } else if (id == R.id.nav_shipper) {
+            Intent shipperIntent = new Intent(HomeActivity.this,ShipperManagement.class);
+            startActivity(shipperIntent);
 //
 //        } else if (id == R.id.nav_log_out) {
 //            //Logout
