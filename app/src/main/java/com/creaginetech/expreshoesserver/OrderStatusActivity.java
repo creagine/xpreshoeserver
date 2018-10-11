@@ -236,9 +236,52 @@ public class OrderStatusActivity extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot postSnapShot:dataSnapshot.getChildren())
+                           if (dataSnapshot.exists())
+                           {
+                               Token token = dataSnapshot.getValue(Token.class);
+
+                               //Make raw payload
+                               Notification notification = new Notification("Expreshoes","Your have new order need ship");
+                               Sender content = new Sender(token.getToken(),notification);
+
+                               mService.sendNotification(content)
+                                       .enqueue(new Callback<MyResponse>() {
+                                           @Override
+                                           public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                               if (response.code() == 200) {
+                                                   if (response.body().success == 1) {
+                                                       Toast.makeText(OrderStatusActivity.this, "Send to shippers !", Toast.LENGTH_SHORT).show();
+                                                   } else {
+                                                       Toast.makeText(OrderStatusActivity.this, "Failed to send notification !", Toast.LENGTH_SHORT).show();
+                                                   }
+                                               }
+                                           }
+
+                                           @Override
+                                           public void onFailure(Call<MyResponse> call, Throwable t) {
+                                               Log.e("ERROR",t.getMessage());
+                                           }
+                                       });
+
+                           }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void sendOrderStatusToUser(final String key,final Request item) {
+        DatabaseReference tokens = db.getReference("Tokens");
+        tokens.child(item.getPhone())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists())
                         {
-                            Token token = postSnapShot.getValue(Token.class);
+                            Token token = dataSnapshot.getValue(Token.class);
 
                             //Make raw payload
                             Notification notification = new Notification("Expreshoes","Your have new order need ship");
@@ -253,48 +296,6 @@ public class OrderStatusActivity extends AppCompatActivity {
                                                     Toast.makeText(OrderStatusActivity.this, "Send to shippers !", Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     Toast.makeText(OrderStatusActivity.this, "Failed to send notification !", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<MyResponse> call, Throwable t) {
-                                            Log.e("ERROR",t.getMessage());
-                                        }
-                                    });
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-    }
-
-    private void sendOrderStatusToUser(final String key,final Request item) {
-        DatabaseReference tokens = db.getReference("Tokens");
-        tokens.orderByKey().equalTo(item.getPhone())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot postSnapShot:dataSnapshot.getChildren())
-                        {
-                            Token token = postSnapShot.getValue(Token.class);
-
-                            //Make raw payload
-                            Notification notification = new Notification("Expreshoes","Your order "+key+" was updated");
-                            Sender content = new Sender(token.getToken(),notification);
-
-                            mService.sendNotification(content)
-                                    .enqueue(new Callback<MyResponse>() {
-                                        @Override
-                                        public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                            if (response.code() == 200) {
-                                                if (response.body().success == 1) {
-                                                    Toast.makeText(OrderStatusActivity.this, "Order was updated !", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(OrderStatusActivity.this, "Order was updated but failed to send notification !", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         }
