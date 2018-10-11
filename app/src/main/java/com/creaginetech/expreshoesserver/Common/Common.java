@@ -18,6 +18,8 @@ import java.util.Locale;
 
 public class Common {
     public static final String SHIPPERS_TABLE = "Shippers" ;
+    public static final String ORDER_NEED_SHIP_TABLE = "OrderNeedShip" ;
+
     public static User currentUser;
     public static Request currentRequest;
 
@@ -41,7 +43,7 @@ public class Common {
         else if (code.equals("1"))
             return "On my way";
         else
-            return "Shipped";
+            return "Shipping";
     }
 
     public static APIService getFCMClient(){

@@ -33,6 +33,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,7 +50,7 @@ public class OrderStatusActivity extends AppCompatActivity {
     FirebaseDatabase db;
     DatabaseReference requests;
 
-    MaterialSpinner spinner;
+    MaterialSpinner spinner,shipperSpinner;
 
     APIService mService;
 
@@ -159,7 +162,26 @@ public class OrderStatusActivity extends AppCompatActivity {
         final View view = inflater.inflate(R.layout.update_order_layout,null);
 
         spinner = (MaterialSpinner)view.findViewById(R.id.statusSpinner);
-        spinner.setItems("Placed","On my way","Shipped");
+        spinner.setItems("Placed","On my way","Shipping");
+
+        shipperSpinner = (MaterialSpinner)view.findViewById(R.id.shipperSpinner);
+
+        //Load all shipper phone to spinner
+        final List<String> shipperList = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference(Common.SHIPPERS_TABLE)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot shipperSnapShot:dataSnapshot.getChildren())
+                            shipperList.add(shipperSnapShot.getKey());
+                        shipperSpinner.setItems(shipperList);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
         alertDialog.setView(view);
 
@@ -170,10 +192,30 @@ public class OrderStatusActivity extends AppCompatActivity {
                 dialogInterface.dismiss();
                 item.setStatus(String.valueOf(spinner.getSelectedIndex()));
 
-                requests.child(localKey).setValue(item);
-                adapter.notifyDataSetChanged(); //Add to update item siza
+                if (item.getStatus().equals("2"))
+                {
 
-                sendOrderStatusToUser(localKey,item);
+                    //Copy item to table "OrderNeedShip"
+                    FirebaseDatabase.getInstance().getReference(Common.ORDER_NEED_SHIP_TABLE)
+                            .child(shipperSpinner.getItems().get(shipperSpinner.getSelectedIndex()).toString())
+                            .child(localKey)
+                            .setValue(item);
+
+                    requests.child(localKey).setValue(item);
+                    adapter.notifyDataSetChanged(); //Add to update item siza
+
+                    sendOrderStatusToUser(localKey,item);
+                    sendOrderShipRequestToShipper(shipperSpinner.getItems().get(shipperSpinner.getSelectedIndex()).toString(),item);
+
+                }
+                else
+                {
+                    requests.child(localKey).setValue(item);
+                    adapter.notifyDataSetChanged(); //Add to update item siza
+
+                    sendOrderStatusToUser(localKey,item);
+
+                }
 
             }
         });
@@ -187,10 +229,53 @@ public class OrderStatusActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    private void sendOrderShipRequestToShipper(String shipperPhone, Request item) {
+
+        DatabaseReference tokens = db.getReference("Tokens");
+        tokens.child(shipperPhone)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot postSnapShot:dataSnapshot.getChildren())
+                        {
+                            Token token = postSnapShot.getValue(Token.class);
+
+                            //Make raw payload
+                            Notification notification = new Notification("Expreshoes","Your have new order need ship");
+                            Sender content = new Sender(token.getToken(),notification);
+
+                            mService.sendNotification(content)
+                                    .enqueue(new Callback<MyResponse>() {
+                                        @Override
+                                        public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                            if (response.code() == 200) {
+                                                if (response.body().success == 1) {
+                                                    Toast.makeText(OrderStatusActivity.this, "Send to shippers !", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(OrderStatusActivity.this, "Failed to send notification !", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<MyResponse> call, Throwable t) {
+                                            Log.e("ERROR",t.getMessage());
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
     private void sendOrderStatusToUser(final String key,final Request item) {
         DatabaseReference tokens = db.getReference("Tokens");
         tokens.orderByKey().equalTo(item.getPhone())
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot postSnapShot:dataSnapshot.getChildren())
