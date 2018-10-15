@@ -42,8 +42,10 @@ public class Common {
             return "Placed";
         else if (code.equals("1"))
             return "On my way";
-        else
+        else if (code.equals("2"))
             return "Shipping";
+        else
+            return "Shipped";
     }
 
     public static APIService getFCMClient(){
