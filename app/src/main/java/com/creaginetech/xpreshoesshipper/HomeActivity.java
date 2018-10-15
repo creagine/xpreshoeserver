@@ -1,6 +1,7 @@
 package com.creaginetech.xpreshoesshipper;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -56,10 +57,12 @@ public class HomeActivity extends AppCompatActivity {
 
         //check permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.CALL_PHONE
             }, Common.REQUEST_CODE);
         } else {
             buildLocationRequest();
@@ -94,7 +97,7 @@ public class HomeActivity extends AppCompatActivity {
 
         adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(listOrders) {
             @Override
-            protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, int position, @NonNull Request model) {
+            protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, final int position, @NonNull final Request model) {
                 viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
                 viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
                 viewHolder.txtOrderAddress.setText(model.getAddress());
@@ -104,7 +107,14 @@ public class HomeActivity extends AppCompatActivity {
                 viewHolder.btnShipping.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(HomeActivity.this, "Implement late !", Toast.LENGTH_SHORT).show();
+                        Common.createShippingOrder(adapter.getRef(position).getKey(),
+                                Common.currentShipper.getPhoneShipper(),
+                                mLastLocation);
+                        Common.currentRequest = model;
+                        Common.currentKey = adapter.getRef(position).getKey();
+
+                        startActivity(new Intent(HomeActivity.this,TrackingOrder.class));
+
                     }
                 });
             }
@@ -138,6 +148,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStop() {
         if (adapter != null)
             adapter.stopListening();
+        if (fusedLocationProviderClient != null)
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         super.onStop();
     }
 
@@ -175,11 +187,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 mLastLocation = locationResult.getLastLocation();
-                Toast.makeText(HomeActivity.this, new StringBuilder("")
-                        .append(mLastLocation.getLatitude())
-                        .append("/")
-                        .append(mLastLocation.getLongitude())
-                        .toString(), Toast.LENGTH_SHORT).show();
+
             }
         };
     }

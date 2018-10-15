@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">XpreshoesShipper</string>
+    <string name="title_activity_tracking_order">Map</string>
 </resources>

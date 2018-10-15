@@ -3,7 +3,6 @@ package com.creaginetech.xpreshoesshipper.Model;
 import java.util.List;
 
 public class Request {
-
     private String phone;
     private String name;
     private String address;
