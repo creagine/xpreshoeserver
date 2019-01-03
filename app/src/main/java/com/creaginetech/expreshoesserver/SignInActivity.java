@@ -67,7 +67,7 @@ public class SignInActivity extends AppCompatActivity {
                     {
                         if (user.getPassword().equals(localPassword))
                         {
-                            Intent login = new Intent(SignInActivity.this,HomeActivity.class);
+                            Intent login = new Intent(SignInActivity.this,HomeNewActivity.class);
                             Common.currentUser = user;
                             startActivity(login);
                             finish();

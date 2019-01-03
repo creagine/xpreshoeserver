@@ -4,23 +4,23 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -28,10 +28,8 @@ import android.widget.Toast;
 
 import com.creaginetech.expreshoesserver.Common.Common;
 import com.creaginetech.expreshoesserver.Interface.ItemClickListener;
-import com.creaginetech.expreshoesserver.Model.Category;
-import com.creaginetech.expreshoesserver.Model.Food;
-import com.creaginetech.expreshoesserver.Model.Token;
-import com.creaginetech.expreshoesserver.ViewHolder.MenuViewHolder;
+import com.creaginetech.expreshoesserver.Model.Service;
+import com.creaginetech.expreshoesserver.ViewHolder.ServiceViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -52,21 +50,20 @@ import com.squareup.picasso.Picasso;
 
 import java.util.UUID;
 
-public class HomeActivity extends AppCompatActivity
+public class HomeNewActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TextView txtFullName;
 
     //Firebase database
     FirebaseDatabase database;
-    DatabaseReference categories;
-
+    DatabaseReference service;
 
     //firebase storage
     FirebaseStorage storage;
     StorageReference storageReference;
 
-    FirebaseRecyclerAdapter<Category,MenuViewHolder> adapter;
+    FirebaseRecyclerAdapter<Service,ServiceViewHolder> adapter;
 
     //View
     RecyclerView recycler_menu;
@@ -77,7 +74,7 @@ public class HomeActivity extends AppCompatActivity
     Button btnUpload,btnSelect;
 
     //New category
-    Category newCategory;
+    Service newService;
 
     //select image
     Uri saveUri;
@@ -87,19 +84,16 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Menu Management");
+        setContentView(R.layout.activity_home_new);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         //Init Firebase
         database = FirebaseDatabase.getInstance();
-        categories = database.getReference("Category");
+        service = database.getReference("service").child("01"); //EDIT THIS
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -131,26 +125,15 @@ public class HomeActivity extends AppCompatActivity
 
         loadMenu();
 
-
-        //Send token
-        updateToken(FirebaseInstanceId.getInstance().getToken());
-
-    }
-
-    private void updateToken(String token) {
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference tokens = db.getReference("Tokens");
-        Token data = new Token(token,true);
-        tokens.child(Common.currentUser.getPhone()).setValue(data);
     }
 
     private void showDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
-        alertDialog.setTitle("Add new category");
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeNewActivity.this);
+        alertDialog.setTitle("Add new service");
         alertDialog.setMessage("Please fill full information");
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View add_menu_layout = inflater.inflate(R.layout.add_new_menu_layout,null);
+        View add_menu_layout = inflater.inflate(R.layout.add_new_service_layout,null);
 
         edtName = add_menu_layout.findViewById(R.id.edtName);
         btnSelect = add_menu_layout.findViewById(R.id.btnSelect);
@@ -182,10 +165,10 @@ public class HomeActivity extends AppCompatActivity
                 dialogInterface.dismiss();
 
                 //Here, just create new category
-                if(newCategory != null)
+                if(newService != null)
                 {
-                    categories.push().setValue(newCategory);
-                    Snackbar.make(drawer,"New category "+newCategory.getName()+" was added",Snackbar.LENGTH_SHORT)
+                    service.push().setValue(newService);
+                    Snackbar.make(drawer,"New service "+ newService.getServiceName()+" was added",Snackbar.LENGTH_SHORT)
                             .show();
 
                 }
@@ -220,12 +203,12 @@ public class HomeActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(HomeActivity.this, "Uploaded !!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeNewActivity.this, "Uploaded !!!", Toast.LENGTH_SHORT).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //set value for newCategory if image upload and we can get download link
-                                    newCategory = new Category(edtName.getText().toString(),uri.toString());
+                                    newService = new Service(edtName.getText().toString(),uri.toString());
                                 }
                             });
                         }
@@ -234,7 +217,7 @@ public class HomeActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             mDialog.dismiss();
-                            Toast.makeText(HomeActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeNewActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -270,33 +253,33 @@ public class HomeActivity extends AppCompatActivity
 
     private void loadMenu() {
 
-        FirebaseRecyclerOptions<Category> options = new FirebaseRecyclerOptions.Builder<Category>()
-                .setQuery(categories,Category.class)
+        FirebaseRecyclerOptions<Service> options = new FirebaseRecyclerOptions.Builder<Service>()
+                .setQuery(service,Service.class)
                 .build();
 
-        adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Service, ServiceViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull MenuViewHolder viewHolder, int position, @NonNull Category model) {
-                viewHolder.txtMenuName.setText(model.getName());
-                Picasso.with(HomeActivity.this).load(model.getImage())
-                        .into(viewHolder.imageView);
+            protected void onBindViewHolder(@NonNull ServiceViewHolder viewHolder, int position, @NonNull Service model) {
+                viewHolder.serviceName.setText(model.getServiceName());
+                Picasso.with(HomeNewActivity.this).load(model.getServiceImage())
+                        .into(viewHolder.serviceImage);
 
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
                         //send Category Id and Start new Activity
-                        Intent foodList = new Intent(HomeActivity.this,FoodListActivity.class);
-                        foodList.putExtra("CategoryId",adapter.getRef(position).getKey());
-                        startActivity(foodList);
+                        Intent serviceDetail = new Intent(HomeNewActivity.this,ServiceDetailActivity.class);
+                        serviceDetail.putExtra("ServiceId",adapter.getRef(position).getKey());
+                        startActivity(serviceDetail);
                     }
                 });
             }
 
             @Override
-            public MenuViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public ServiceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.menu_item,parent,false);
-                return new MenuViewHolder(itemView);
+                        .inflate(R.layout.service_item,parent,false);
+                return new ServiceViewHolder(itemView);
             }
         };
         adapter.startListening();
@@ -358,15 +341,15 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_orders) {
 
-            Intent orderIntent = new Intent(HomeActivity.this,OrderStatusActivity.class);
+            Intent orderIntent = new Intent(HomeNewActivity.this,OrderStatusActivity.class);
             startActivity(orderIntent);
 
         } else if (id == R.id.nav_banner) {
-            Intent bannerIntent = new Intent(HomeActivity.this,BannerActivity.class);
+            Intent bannerIntent = new Intent(HomeNewActivity.this,BannerActivity.class);
             startActivity(bannerIntent);
 
         } else if (id == R.id.nav_message) {
-            Intent orderIntent = new Intent(HomeActivity.this,SendMessageActivity.class);
+            Intent orderIntent = new Intent(HomeNewActivity.this,SendMessageActivity.class);
             startActivity(orderIntent);
 //
 //        } else if (id == R.id.nav_log_out) {
@@ -383,7 +366,6 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
-
     //Update and delete
     //coding press ctrl+o
     @Override
@@ -395,15 +377,13 @@ public class HomeActivity extends AppCompatActivity
         }
         else if (item.getTitle().equals(Common.DELETE))
         {
-            deleteCategory(adapter.getRef(item.getOrder()).getKey());
+            deleteService(adapter.getRef(item.getOrder()).getKey());
         }
 
         return super.onContextItemSelected(item);
     }
 
-    private void deleteCategory(final String key) {
-
-
+    private void deleteService(final String key) {
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -412,27 +392,8 @@ public class HomeActivity extends AppCompatActivity
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
 
-                        //(Delete category and all fod in category)
-                        DatabaseReference foods = database.getReference("Foods");
-                        Query foodInCategory = foods.orderByChild("menuId").equalTo(key);
-                        foodInCategory.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for(DataSnapshot postSnapshot:dataSnapshot.getChildren())
-                                {
-                                    postSnapshot.getRef().removeValue();
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        categories.child(key).removeValue();
-                        Toast.makeText(HomeActivity.this, "Item deleted !!!", Toast.LENGTH_SHORT).show();
+                        service.child(key).removeValue();
+                        Toast.makeText(HomeNewActivity.this, "Service deleted !!!", Toast.LENGTH_SHORT).show();
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -443,27 +404,27 @@ public class HomeActivity extends AppCompatActivity
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure want to delet this Category and all Foods in Category ?").setPositiveButton("Yes", dialogClickListener)
+        builder.setMessage("Are you sure want to delete this Service ?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
 
     }
 
-    private void showUpdateDialog(final String key, final Category item) {
+    private void showUpdateDialog(final String key, final Service item) {
         //copy code from showAddDialog and modify
 
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeNewActivity.this);
         alertDialog.setTitle("Update Category");
         alertDialog.setMessage("Please fill full information");
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View add_menu_layout = inflater.inflate(R.layout.add_new_menu_layout, null);
+        View add_menu_layout = inflater.inflate(R.layout.add_new_service_layout, null);
 
         edtName = add_menu_layout.findViewById(R.id.edtName);
         btnSelect = add_menu_layout.findViewById(R.id.btnSelect);
         btnUpload = add_menu_layout.findViewById(R.id.btnUpload);
 
         //Set default name
-        edtName.setText(item.getName());
+        edtName.setText(item.getServiceName());
 
         //Event for button
         btnSelect.setOnClickListener(new View.OnClickListener() {
@@ -491,8 +452,8 @@ public class HomeActivity extends AppCompatActivity
                 dialogInterface.dismiss();
 
                 //Update information
-                item.setName(edtName.getText().toString());
-                categories.child(key).setValue(item);
+                item.setServiceName(edtName.getText().toString());
+                service.child(key).setValue(item);
 
 
             }
@@ -509,7 +470,7 @@ public class HomeActivity extends AppCompatActivity
         alertDialog.show();
     }
 
-    private void changeImage(final Category item) {
+    private void changeImage(final Service item) {
         if (saveUri != null)
         {
             final ProgressDialog mDialog = new ProgressDialog(this);
@@ -523,12 +484,12 @@ public class HomeActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDialog.dismiss();
-                            Toast.makeText(HomeActivity.this, "Uploaded !!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeNewActivity.this, "Uploaded !!!", Toast.LENGTH_SHORT).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //set value for newCategory if image upload and we can get download link
-                                    item.setImage(uri.toString());
+                                    item.setServiceImage(uri.toString());
                                 }
                             });
                         }
@@ -537,7 +498,7 @@ public class HomeActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             mDialog.dismiss();
-                            Toast.makeText(HomeActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeNewActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {

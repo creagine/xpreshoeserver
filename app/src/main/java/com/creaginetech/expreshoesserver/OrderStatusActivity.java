@@ -44,8 +44,8 @@ public class OrderStatusActivity extends AppCompatActivity {
 
     FirebaseRecyclerAdapter<Request,OrderViewHolder> adapter;
 
-    FirebaseDatabase db;
-    DatabaseReference requests;
+    FirebaseDatabase mFirebaseInstance;
+    DatabaseReference orderReference;
 
     MaterialSpinner spinner;
 
@@ -57,14 +57,14 @@ public class OrderStatusActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_status);
 
         //Firebase
-        db = FirebaseDatabase.getInstance();
-        requests = db.getReference("Requests");
+        mFirebaseInstance = FirebaseDatabase.getInstance();
+        orderReference = mFirebaseInstance.getReference("order").child("01");
 
         //Init Service
         mService = Common.getFCMClient();
 
         //Init
-        recyclerView = (RecyclerView)findViewById(R.id.listOrders);
+        recyclerView = findViewById(R.id.listOrders);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -76,7 +76,7 @@ public class OrderStatusActivity extends AppCompatActivity {
     private void loadOrder() {
 
         FirebaseRecyclerOptions<Request> options = new FirebaseRecyclerOptions.Builder<Request>()
-                .setQuery(requests,Request.class)
+                .setQuery(orderReference,Request.class)
                 .build();
 
         adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(options) {
@@ -169,7 +169,7 @@ public class OrderStatusActivity extends AppCompatActivity {
                 dialogInterface.dismiss();
                 item.setStatus(String.valueOf(spinner.getSelectedIndex()));
 
-                requests.child(localKey).setValue(item);
+                orderReference.child(localKey).setValue(item);
                 adapter.notifyDataSetChanged(); //Add to update item siza
 
                 sendOrderStatusToUser(localKey,item);
@@ -187,7 +187,7 @@ public class OrderStatusActivity extends AppCompatActivity {
     }
 
     private void sendOrderStatusToUser(final String key,final Request item) {
-        DatabaseReference tokens = db.getReference("Tokens");
+        DatabaseReference tokens = mFirebaseInstance.getReference("Tokens");
         tokens.orderByKey().equalTo(item.getPhone())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -229,7 +229,7 @@ public class OrderStatusActivity extends AppCompatActivity {
     }
 
     private void deleteOrder(String key) {
-        requests.child(key).removeValue();
+        orderReference.child(key).removeValue();
         adapter.notifyDataSetChanged();
     }
 
