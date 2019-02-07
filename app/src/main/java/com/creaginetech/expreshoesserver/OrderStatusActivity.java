@@ -39,16 +39,20 @@ import retrofit2.Response;
 
 public class OrderStatusActivity extends AppCompatActivity {
 
+    //var recycler
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
+    //var recycler adapter
     FirebaseRecyclerAdapter<Request,OrderViewHolder> adapter;
 
+    //var firebase database
     FirebaseDatabase mFirebaseInstance;
     DatabaseReference orderReference;
 
     MaterialSpinner spinner;
 
+    //api service push notif
     APIService mService;
 
     @Override
@@ -56,32 +60,38 @@ public class OrderStatusActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_status);
 
-        //Firebase
+        //init firebase database
         mFirebaseInstance = FirebaseDatabase.getInstance();
         orderReference = mFirebaseInstance.getReference("order").child("01");
 
-        //Init Service
+        //Init fcm push notif
         mService = Common.getFCMClient();
 
-        //Init
+        //Init recyclerview
         recyclerView = findViewById(R.id.listOrders);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        loadOrder(); //load all order
+        //load all order
+        loadOrder();
 
     }
 
+    //method load order
     private void loadOrder() {
 
+        //firebase recycler builder
         FirebaseRecyclerOptions<Request> options = new FirebaseRecyclerOptions.Builder<Request>()
                 .setQuery(orderReference,Request.class)
                 .build();
 
+        //init recycler adapter
         adapter = new FirebaseRecyclerAdapter<Request, OrderViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull OrderViewHolder viewHolder, final int position, @NonNull final Request model) {
+
+                //set widget
                 viewHolder.txtOrderId.setText(adapter.getRef(position).getKey());
                 viewHolder.txtOrderStatus.setText(Common.convertCodeToStatus(model.getStatus()));
                 viewHolder.txtOrderAddress.setText(model.getAddress());
@@ -130,6 +140,7 @@ public class OrderStatusActivity extends AppCompatActivity {
                 return new OrderViewHolder(itemView);
             }
         };
+
         adapter.startListening();
 
         adapter.notifyDataSetChanged();
@@ -187,7 +198,9 @@ public class OrderStatusActivity extends AppCompatActivity {
     }
 
     private void sendOrderStatusToUser(final String key,final Request item) {
+
         DatabaseReference tokens = mFirebaseInstance.getReference("Tokens");
+
         tokens.orderByKey().equalTo(item.getPhone())
                 .addValueEventListener(new ValueEventListener() {
                     @Override

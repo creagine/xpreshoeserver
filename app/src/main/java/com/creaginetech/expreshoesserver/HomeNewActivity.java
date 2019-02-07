@@ -90,7 +90,7 @@ public class HomeNewActivity extends AppCompatActivity
 
         //Init Firebase
         database = FirebaseDatabase.getInstance();
-        service = database.getReference("service").child("01"); //EDIT THIS
+        service = database.getReference("Service").child("01"); //EDIT THIS
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -115,7 +115,7 @@ public class HomeNewActivity extends AppCompatActivity
         //Set Name for user
         View headerView = navigationView.getHeaderView(0);
         txtFullName = (TextView)headerView.findViewById(R.id.txtFullName);
-        txtFullName.setText(Common.currentUser.getName());
+//        txtFullName.setText(Common.currentUser.getName());
 
         //Init View
         recycler_menu = (RecyclerView)findViewById(R.id.recycler_menu);

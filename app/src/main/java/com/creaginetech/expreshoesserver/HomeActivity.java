@@ -121,7 +121,7 @@ public class HomeActivity extends AppCompatActivity
         //Set Name for user
         View headerView = navigationView.getHeaderView(0);
         txtFullName = (TextView)headerView.findViewById(R.id.txtFullName);
-        txtFullName.setText(Common.currentUser.getName());
+//        txtFullName.setText(Common.currentUser.getName());
 
         //Init View
         recycler_menu = (RecyclerView)findViewById(R.id.recycler_menu);
@@ -141,7 +141,7 @@ public class HomeActivity extends AppCompatActivity
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference tokens = db.getReference("Tokens");
         Token data = new Token(token,true);
-        tokens.child(Common.currentUser.getPhone()).setValue(data);
+//        tokens.child(Common.currentUser.getPhone()).setValue(data);
     }
 
     private void showDialog() {

@@ -13,7 +13,7 @@ import com.creaginetech.expreshoesserver.Remote.IGeoCoordinates;
 import com.creaginetech.expreshoesserver.Remote.RetrofitClient;
 
 public class Common {
-    public static User currentUser;
+    public static String currentUser;
     public static Request currentRequest;
 
     public static String topicName = "news";
