@@ -8,6 +8,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -167,7 +168,7 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
 
     //[START UPDATE ITEM]
     private void updateItem() {
-        //jika user mengganti semua item termasuk gambar
+        //if user change all item include change service image
         if (saveUri != null)
         {
             final ProgressDialog mDialog = new ProgressDialog(ServiceDetailActivity.this);
@@ -180,6 +181,7 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
                             Toast.makeText(ServiceDetailActivity.this, "Uploaded !!!", Toast.LENGTH_SHORT).show();
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -190,6 +192,7 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
                                     imgUri = uri.toString();
                                     //push update to database
                                     pushToDatabase();
+
                                 }
                             });
                         }
@@ -210,7 +213,8 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
                     });
         }
         else {
-            //jika user hanya mengganti service name,price dan desc tanpa mengganti gambar
+            //if saveUri == null
+            //if user just change items service without change the service image
             final StorageReference imageFolder = storage.getReferenceFromUrl(currentService.getServiceImage());
             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
@@ -223,9 +227,28 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
             });
         }
     }
+    //[END UPDATE ITEM]
 
     //[START push to update database]
     private void pushToDatabase(){
+
+        //[START to Validate items if empty before push to update]
+        String serviceName = service_name.getText().toString();
+        String servicePrice = service_price.getText().toString();
+        String serviceDesc = service_description.getText().toString();
+
+        if (TextUtils.isEmpty(serviceName) ){
+            Toast.makeText(ServiceDetailActivity.this, "Service Name is Empty !", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (TextUtils.isEmpty(servicePrice)){
+            Toast.makeText(ServiceDetailActivity.this, "Service Price is Empty !", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (TextUtils.isEmpty(serviceDesc)){
+            Toast.makeText(ServiceDetailActivity.this, "Service Description is Empty !", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //[END to Validate items if empty before push to update]
+
         Map<String,Object> update_item = new HashMap<>();
         update_item.put("serviceName",service_name.getText().toString());
         update_item.put("price",service_price.getText().toString());

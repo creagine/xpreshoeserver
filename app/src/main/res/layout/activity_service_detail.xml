@@ -73,7 +73,7 @@
 
                     <EditText
                         android:id="@+id/service_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:padding="12dp"
@@ -93,12 +93,12 @@
                             app:srcCompat="@drawable/ic_attach_money_black_24dp"
                             android:layout_weight="1"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             tools:ignore="Suspicious0dp" />
 
                         <EditText
                             android:id="@+id/service_price"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="9"
                             android:inputType="number"
@@ -127,7 +127,7 @@
 
                     <EditText
                         android:id="@+id/service_description"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:lineSpacingMultiplier="1.5"
