@@ -1,6 +1,8 @@
 package com.creaginetech.expreshoesserver;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -146,23 +148,49 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
 
     //[START DELETE ITEM]
     private void deleteItem() {
-//        final StorageReference imageFolder = storageRef.child("expreshoes/serviceImages/"+currentService.getServiceImage());
-        final StorageReference imageFolder = storage.getReferenceFromUrl(currentService.getServiceImage());
-        imageFolder.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        //init Alert Dialog to delete Item - 1 (Alert dialog)
+        final AlertDialog.Builder builder = new AlertDialog.Builder(ServiceDetailActivity.this);
+        builder.setCancelable(false);
+        builder.setTitle("Delete Item");
+        builder.setMessage("Are you sure want to delete this item ?");
+        //set Listeners for dialog button - 2 (Alert dialog)
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Intent homeIntent = new Intent(ServiceDetailActivity.this,HomeNewActivity.class);
-                startActivity(homeIntent);
-                service.child(serviceId).removeValue();
-                Toast.makeText(ServiceDetailActivity.this, "Item Deleted !", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ServiceDetailActivity.this, "Failed to delete item", Toast.LENGTH_SHORT).show();
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                //DELETE ITEM
+                final StorageReference imageFolder = storage.getReferenceFromUrl(currentService.getServiceImage());
+                imageFolder.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        //TODO : Delete item still cant delete image in firebase storage
+                        Intent homeIntent = new Intent(ServiceDetailActivity.this,HomeNewActivity.class);
+                        startActivity(homeIntent);
+                        service.child(serviceId).removeValue();
+                        Toast.makeText(ServiceDetailActivity.this, "Item Deleted !", Toast.LENGTH_SHORT).show();
+                        finish();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ServiceDetailActivity.this, "Failed to delete item", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                //END delete item
+
             }
         });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        //create the alert dialog to show it - 3 (Alert dialog)
+        builder.create().show();
     }
     //[END DELETE ITEM]
 
