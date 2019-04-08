@@ -225,6 +225,7 @@ public class HomeNewActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        finishAffinity();
     }
 
     @Override
@@ -324,5 +325,7 @@ public class HomeNewActivity extends AppCompatActivity
                 .setNegativeButton("No", dialogClickListener).show();
 
     }
+
+
 
 }

@@ -285,7 +285,6 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
                     }
                 });
             }
-
     }
     //[END UPDATE ITEM]
 
@@ -370,9 +369,7 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
                 Exception error = result.getError();
             }
         }
-
     }
     //[END TO OPEN STORAGE TO SELECT IMAGE]
-
 
 }
