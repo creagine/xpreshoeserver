@@ -316,18 +316,20 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
         update_item.put("serviceImage",imgUri); //save image URL string
 
         //START DELETE LAST IMAGE
-        final StorageReference imageFolder = storage.getReferenceFromUrl(Common.currentImage);
-        imageFolder.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
+        if (!imgUri.equals(Common.currentImage)){
+            final StorageReference imageFolder = storage.getReferenceFromUrl(Common.currentImage);
+            imageFolder.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ServiceDetailActivity.this, "Failed to update item", Toast.LENGTH_SHORT).show();
-            }
-        });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(ServiceDetailActivity.this, "Failed to update item", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
         //END DELETE LAST IMAGE
 
         service.child(serviceId).updateChildren(update_item).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -363,8 +365,6 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
                 service_image.setImageURI(saveUri);
                 // if image selected
                 isChanged = true;
-
-
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
