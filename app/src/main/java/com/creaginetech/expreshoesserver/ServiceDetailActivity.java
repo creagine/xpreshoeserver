@@ -1,15 +1,21 @@
 package com.creaginetech.expreshoesserver;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +43,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +56,7 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
     ImageView service_image;
     CollapsingToolbarLayout collapsingToolbarLayout;
     Button btnUpdateItem,btnDeleteItem;
+    Toolbar toolbar;
 
     String serviceId="";
 
@@ -55,6 +64,8 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
 
     //select image
     Uri saveUri;
+    private boolean isChanged = false;
+
 
     FirebaseAuth mAuth;
     FirebaseUser mFirebaseUser;
@@ -111,6 +122,8 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
                 //Set Image
                 Picasso.with(getBaseContext()).load(currentService.getServiceImage())
                         .into(service_image);
+                Common.currentImage = currentService.getServiceImage();
+
 //                collapsingToolbarLayout.setTitle(currentService.getServiceName());
                 service_price.setText(currentService.getPrice());
                 service_name.setText(currentService.getServiceName());
@@ -137,14 +150,33 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    //[START TO OPEN STORAGE TO SELECT IMAGE] - 1
+    //[START TO OPEN STORAGE TO SELECT IMAGE] - image profile - 1
     private void selectImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Select picture"),Common.PICK_IMAGE_REQUEST);
+
+        //for check permission if sdk low from marsmalllow
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (ContextCompat.checkSelfPermission(ServiceDetailActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(ServiceDetailActivity.this, "Permission denied !", Toast.LENGTH_SHORT).show();
+                ActivityCompat.requestPermissions(ServiceDetailActivity.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+            } else {
+                // start picker to get image for cropping and then use the image in cropping activity
+                bringImagePicture();
+            }
+        } else {
+            bringImagePicture();
+        }
+
     }
-    //[END TO OPEN STORAGE TO SELECT IMAGE] - 1
+    //[END TO OPEN STORAGE TO SELECT IMAGE]
+
+    //Crop image | image profile - 2
+    private void bringImagePicture() {
+        // start picker to get image for cropping and then use the image in cropping activity
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setAspectRatio(1,1)
+                .start(ServiceDetailActivity.this);
+    }
 
     //[START DELETE ITEM]
     private void deleteItem() {
@@ -168,9 +200,10 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
                         //TODO : Delete item still cant delete image in firebase storage
                         Intent homeIntent = new Intent(ServiceDetailActivity.this,HomeNewActivity.class);
                         startActivity(homeIntent);
+                        finish();
                         service.child(serviceId).removeValue();
                         Toast.makeText(ServiceDetailActivity.this, "Item Deleted !", Toast.LENGTH_SHORT).show();
-                        finish();
+
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -197,63 +230,62 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
     //[START UPDATE ITEM]
     private void updateItem() {
         //if user change all item include change service image
-        if (saveUri != null)
-        {
-            final ProgressDialog mDialog = new ProgressDialog(ServiceDetailActivity.this);
-            mDialog.show();
+        if (saveUri != null && isChanged) {
 
-            String imageName = UUID.randomUUID().toString();
-            final StorageReference imageFolder = storageRef.child("expreshoes/serviceImages/"+imageName);
+                final ProgressDialog mDialog = new ProgressDialog(ServiceDetailActivity.this);
+                mDialog.show();
+
+                String imageName = UUID.randomUUID().toString();
+                final StorageReference imageFolder = storageRef.child("expreshoes/serviceImages/" + imageName);
 //            final StorageReference imageFolder = storage.getReferenceFromUrl(currentService.getServiceImage());
-            imageFolder.putFile(saveUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                imageFolder.putFile(saveUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            Toast.makeText(ServiceDetailActivity.this, "Uploaded !!!", Toast.LENGTH_SHORT).show();
-                            imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    mDialog.dismiss();
+                                Toast.makeText(ServiceDetailActivity.this, "Uploaded !!!", Toast.LENGTH_SHORT).show();
+                                imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        mDialog.dismiss();
 
-                                    //img to string
-                                    imgUri = uri.toString();
-                                    //push update to database
-                                    pushToDatabase();
+                                        //img to string
+                                        imgUri = uri.toString();
+                                        //push update to database
+                                        pushToDatabase();
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                mDialog.dismiss();
+                                Toast.makeText(ServiceDetailActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                                mDialog.setMessage("Uploaded " + progress + " %");
+                            }
+                        });
+            } else {
+                //if saveUri == null
+                //if user just change items service without change the service image
+                final StorageReference imageFolder = storage.getReferenceFromUrl(currentService.getServiceImage());
+                imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        //img to string
+                        imgUri = uri.toString();
+                        //save to database
+                        pushToDatabase();
+                    }
+                });
+            }
 
-                                }
-                            });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            mDialog.dismiss();
-                            Toast.makeText(ServiceDetailActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            mDialog.setMessage("Uploaded "+progress+" %");
-                        }
-                    });
-        }
-        else {
-            //if saveUri == null
-            //if user just change items service without change the service image
-            final StorageReference imageFolder = storage.getReferenceFromUrl(currentService.getServiceImage());
-            imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    //img to string
-                    imgUri = uri.toString();
-                    //save to database
-                    pushToDatabase();
-                }
-            });
-        }
     }
     //[END UPDATE ITEM]
 
@@ -283,6 +315,21 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
         update_item.put("description",service_description.getText().toString());
         update_item.put("serviceImage",imgUri); //save image URL string
 
+        //START DELETE LAST IMAGE
+        final StorageReference imageFolder = storage.getReferenceFromUrl(Common.currentImage);
+        imageFolder.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ServiceDetailActivity.this, "Failed to update item", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //END DELETE LAST IMAGE
+
         service.child(serviceId).updateChildren(update_item).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -296,18 +343,36 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
     }
     //[END push to update database]
 
-    //[START TO OPEN STORAGE TO SELECT IMAGE] - 2 (GET IMAGE FROM STORAGE)
+    //[START TO OPEN STORAGE TO SELECT IMAGE]
+        /*set image crop to image profile circle | image profile - 3
+            to image profile - 4 Add to manifest permission and
+             add this activity xml in Manifest
+         <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+            */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Common.PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null)
-        {
-            saveUri = data.getData();
-            service_image.setImageURI(saveUri);
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                saveUri = result.getUri();
+                //set circleImage for change the picture
+                service_image.setImageURI(saveUri);
+                // if image selected
+                isChanged = true;
+
+
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
         }
+
     }
-    //[END TO OPEN STORAGE TO SELECT IMAGE] - 2 (GET IMAGE FROM STORAGE)
+    //[END TO OPEN STORAGE TO SELECT IMAGE]
 
 
 }

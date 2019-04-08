@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#e6d066</color>
+    <color name="colorPrimary">#E6D066</color>
     <color name="colorPrimaryDark">#d7c441</color>
     <color name="colorAccent">#5e6279</color>
     <color name="colorBackground">#f3f4f8</color>
@@ -14,5 +14,5 @@
     <color name="overlayBackground">#7f333639</color>
     <color name="overlayActionBar">#0e0d0e</color>
 
-    <color name="bgRowBackground">#FA315b</color>
+    <color name="bgRowBackground">#8CFA315B</color>
 </resources>

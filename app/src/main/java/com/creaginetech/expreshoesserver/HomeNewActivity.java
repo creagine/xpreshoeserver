@@ -194,7 +194,7 @@ public class HomeNewActivity extends AppCompatActivity
             @Override
             public ServiceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.service_item,parent,false);
+                        .inflate(R.layout.service_items,parent,false);
                 return new ServiceViewHolder(itemView);
             }
         };

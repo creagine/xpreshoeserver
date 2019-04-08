@@ -24,14 +24,6 @@
             app:expandedTitleTextAppearance="@android:color/black"
             >
 
-            <ImageView
-                android:id="@+id/img_service"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@null"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax" />
-
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:title="Food Name"
@@ -40,6 +32,16 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:layout_collapseMode="parallax"
                 />
+
+            <ImageView
+                android:id="@+id/img_service"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax" />
+
+
 
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -145,13 +147,16 @@
                 android:id="@+id/btnUpdateItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Update Item"/>
+                android:layout_marginBottom="10dp"
+                android:background="@color/colorPrimary"
+                android:text="Update Item" />
 
             <Button
                 android:id="@+id/btnDeleteItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Delete Item"/>
+                android:background="@color/bgRowBackground"
+                android:text="Delete Item" />
 
         </LinearLayout>
 

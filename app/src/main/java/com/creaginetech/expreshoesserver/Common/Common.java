@@ -21,6 +21,8 @@ public class Common {
     public static String shopSelected = "";
     public static String serviceSelected = "";
 
+    public static String currentImage;
+
     public static final String UPDATE = "Update";
     public static final String DELETE = "Delete";
 
@@ -30,7 +32,6 @@ public class Common {
     public static final String baseUrl = "https://maps.googleapis.com";
 
     public static final String fcmUrl = "https://fcm.googleapis.com";
-
 
     public static String convertCodeToStatus(String code)
     {
