@@ -98,6 +98,9 @@ public class ServiceDetailActivity extends AppCompatActivity implements View.OnC
         service_image = findViewById(R.id.img_service);
         btnUpdateItem = findViewById(R.id.btnUpdateItem);
         btnDeleteItem = findViewById(R.id.btnDeleteItem);
+//
+//        Toolbar toolbar = findViewById(R.id.toolbar2);
+//        setSupportActionBar(toolbar);
 
         btnUpdateItem.setOnClickListener(this);
         btnDeleteItem.setOnClickListener(this);
