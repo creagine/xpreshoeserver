@@ -4,71 +4,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewServiceDetailActivity">
+    tools:context=".AccountActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbarServiceDetail"
-        android:layout_width="0dp"
+        android:id="@+id/toolbarAccount"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:navigationIcon="@drawable/ic_action_back"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Edit Service"
+        app:navigationIcon="@drawable/ic_action_back"
+        app:title="Shop Account"
         app:titleTextColor="@android:color/white" />
 
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarServiceDetail">
+        app:layout_constraintTop_toBottomOf="@+id/toolbarAccount"
+        app:layout_constraintVertical_bias="0.0">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/img_service"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:scaleType="centerCrop"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/shopImage"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="24dp"
+                android:src="@drawable/background"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/background" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <android.support.v7.widget.CardView
-                android:id="@+id/cardServiceDetail"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_service">
+                app:layout_constraintTop_toBottomOf="@+id/shopImage">
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <EditText
-                        android:id="@+id/service_name"
-                        android:layout_width="match_parent"
+                        android:id="@+id/edtShopName"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
-                        android:hint="Service Name"
+                        android:ems="10"
+                        android:hint="Shop Name"
                         android:inputType="textPersonName|textCapWords"
                         android:singleLine="true"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -76,81 +79,38 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
-                        android:id="@+id/service_price"
+                        android:id="@+id/edtShopAddress"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:ems="10"
+                        android:hint="Shop Address"
+                        android:inputType="textPersonName|textCapWords"
+                        android:singleLine="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/edtShopName" />
+
+                    <EditText
+                        android:id="@+id/edtShopPhone"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
-                        android:hint="Service Price"
-                        android:inputType="number"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/imageView2"
-                        app:layout_constraintTop_toBottomOf="@+id/service_name"
-                        app:layout_constraintVertical_bias="1.0" />
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/service_name"
-                        app:srcCompat="@drawable/rp" />
-
-
-                </android.support.constraint.ConstraintLayout>
-
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/cardServiceDetailDesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardServiceDetail">
-
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/service_description"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:hint="Service Desc"
-                        android:inputType="text|textCapWords"
+                        android:ems="10"
+                        android:hint="Shop Phone"
+                        android:inputType="phone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
+                        app:layout_constraintTop_toBottomOf="@+id/edtShopAddress" />
                 </android.support.constraint.ConstraintLayout>
-
-
             </android.support.v7.widget.CardView>
-
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
-
-
 </android.support.constraint.ConstraintLayout>

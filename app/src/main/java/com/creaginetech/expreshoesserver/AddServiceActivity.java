@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -75,6 +76,17 @@ public class AddServiceActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.buttonSave);
         btnCancel = findViewById(R.id.buttonCancel);
         imgService = findViewById(R.id.imageViewService);
+
+        Toolbar toolbar = findViewById(R.id.toolbarAddService);
+        setSupportActionBar(toolbar);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //back button to Home Activity
+                finish();
+            }
+        });
 
         //Event for button
         btnSelect.setOnClickListener(new View.OnClickListener() {

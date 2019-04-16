@@ -97,8 +97,7 @@ public class NewServiceDetailActivity extends AppCompatActivity implements View.
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeIntent = new Intent(NewServiceDetailActivity.this,HomeNewActivity.class);
-                startActivity(homeIntent);
+                //back button to Home Activity
                 finish();
             }
         });

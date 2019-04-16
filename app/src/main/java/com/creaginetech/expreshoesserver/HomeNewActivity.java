@@ -93,7 +93,7 @@ public class HomeNewActivity extends AppCompatActivity
 
         drawer = findViewById(R.id.drawer_layout);
         FloatingActionButton fab = findViewById(R.id.fab);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
         recycler_menu = findViewById(R.id.recycler_menu);
 
         //fab
@@ -118,6 +118,16 @@ public class HomeNewActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         shopName = headerView.findViewById(R.id.TextViewShopName);
         shopImage = headerView.findViewById(R.id.CircleImageViewShopImage);
+
+        //Header click to account activity
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent accountIntent = new Intent(HomeNewActivity.this,AccountActivity.class);
+                startActivity(accountIntent);
+            }
+        });
 
         //Init recycler
         recycler_menu.setHasFixedSize(true);

@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".NewServiceDetailActivity"></activity>
+        <activity android:name=".AccountActivity"></activity>
+        <activity android:name=".NewServiceDetailActivity" />
         <activity android:name=".SetupShopActivity" />
         <activity android:name=".AddServiceActivity" />
         <activity android:name=".ResetPasswordActivity" />
