@@ -182,7 +182,7 @@ public class HomeNewActivity extends AppCompatActivity
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
                         //send Category Id and Start new Activity
-                        Intent serviceDetail = new Intent(HomeNewActivity.this,ServiceDetailActivity.class);
+                        Intent serviceDetail = new Intent(HomeNewActivity.this,NewServiceDetailActivity.class);
 //                        serviceDetail.putExtra("ServiceId",adapter.getRef(position).getKey());
                         Common.serviceSelected = adapter.getRef(position).getKey(); // Send service Id to new activity
                         startActivity(serviceDetail);

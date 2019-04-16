@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    app:cardCornerRadius="2dp"
+    app:cardUseCompatPadding="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -35,7 +36,7 @@
             android:text="Name of Service"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/service_image"
-            app:layout_constraintTop_toTopOf="@+id/service_image" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/service_price"
