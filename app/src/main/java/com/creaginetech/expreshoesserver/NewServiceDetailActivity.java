@@ -214,7 +214,6 @@ public class NewServiceDetailActivity extends AppCompatActivity implements View.
                     @Override
                     public void onSuccess(Void aVoid) {
 
-                        //TODO : Delete item still cant delete image in firebase storage
                         Intent homeIntent = new Intent(NewServiceDetailActivity.this,HomeNewActivity.class);
                         startActivity(homeIntent);
                         finish();
@@ -360,9 +359,6 @@ public class NewServiceDetailActivity extends AppCompatActivity implements View.
         });
     }
     //[END push to update database]
-
-
-
 
     private void widgets() {
         service_description = findViewById(R.id.service_description);

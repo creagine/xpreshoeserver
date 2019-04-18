@@ -22,6 +22,7 @@ public class Common {
     public static String serviceSelected = "";
 
     public static String currentImage;
+    public static String currentShopImage;
 
     public static final String UPDATE = "Update";
     public static final String DELETE = "Delete";
