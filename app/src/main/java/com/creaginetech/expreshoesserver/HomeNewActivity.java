@@ -234,8 +234,9 @@ public class HomeNewActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            finishAffinity();
         }
-        finishAffinity();
+
     }
 
     @Override
@@ -335,6 +336,8 @@ public class HomeNewActivity extends AppCompatActivity
                 .setNegativeButton("No", dialogClickListener).show();
 
     }
+
+
 
 
 

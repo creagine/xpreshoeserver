@@ -42,7 +42,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/background" />
+                app:srcCompat="@drawable/ic_action_add" />
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cardServiceDetail"
@@ -69,6 +69,8 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:hint="Service Name"
+                        android:textColor="@color/primary_text"
+                        android:textColorHint="@color/secondary_text"
                         android:inputType="textPersonName|textCapWords"
                         android:singleLine="true"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -84,6 +86,8 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
                         android:hint="Service Price"
+                        android:textColor="@color/primary_text"
+                        android:textColorHint="@color/secondary_text"
                         android:inputType="number"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -116,9 +120,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cardServiceDetail">
@@ -137,6 +142,8 @@
                         android:layout_marginBottom="8dp"
                         android:hint="Service Desc"
                         android:inputType="text|textCapWords"
+                        android:textColor="@color/primary_text"
+                        android:textColorHint="@color/secondary_text"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

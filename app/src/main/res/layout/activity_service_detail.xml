@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@null"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 app:layout_collapseMode="parallax" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -78,9 +78,8 @@
                         android:layout_marginTop="8dp"
                         android:padding="12dp"
                         android:text="Service Name"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/text_size" />
 
                     <LinearLayout
                         android:id="@+id/layout_price"
@@ -103,9 +102,9 @@
                             android:layout_weight="9"
                             android:inputType="number"
                             android:text="1000"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:textColor="@color/primary_text"
+                            android:textColorHint="@color/secondary_text"
+                            android:textSize="@dimen/text_size" />
 
 
                     </LinearLayout>
@@ -133,8 +132,8 @@
                         android:lineSpacingMultiplier="1.5"
                         android:padding="12dp"
                         android:text="Description"
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp" />
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/text_size"/>
 
                 </LinearLayout>
 
@@ -146,7 +145,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@color/colorAccent"
                 android:text="Update Item" />
 
             <Button

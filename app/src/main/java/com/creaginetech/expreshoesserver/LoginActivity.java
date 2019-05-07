@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         Button btnSignUp = findViewById( R.id.btn_signUp );
         Button btnLogin = findViewById( R.id.btn_login );
-        Button btnReset = findViewById( R.id.btn_reset_password );
+        EditText btnReset = findViewById( R.id.btn_reset_password );
 
         //Get Firebase auth instance
         mAuth = FirebaseAuth.getInstance();

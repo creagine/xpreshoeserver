@@ -73,6 +73,7 @@
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="Select Shop Image"
+        android:textAllCaps="false"
         android:textColor="@color/colorButtonText"
         app:layout_constraintBottom_toTopOf="@+id/buttonFinishService"
         app:layout_constraintEnd_toEndOf="parent"

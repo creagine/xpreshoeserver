@@ -37,12 +37,13 @@
                 android:id="@+id/imageViewService"
                 android:layout_width="0dp"
                 android:layout_height="250dp"
+                android:background="#BDBDBD"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/background" />
+                app:srcCompat="@drawable/ic_action_add" />
 
             <EditText
                 android:id="@+id/edtName"
@@ -92,9 +93,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="8dp"
-                android:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/secondary_text"
                 android:shadowColor="@android:color/black"
-                android:text="SELECT IMAGE"
+                android:text="Select Image"
+                android:textSize="@dimen/button_text_size"
+                android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 app:layout_constraintTop_toBottomOf="@+id/imageViewService"
                 tools:layout_editor_absoluteX="0dp" />
@@ -107,6 +110,9 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="Save"
+                android:textSize="@dimen/button_text_size"
+                android:textAllCaps="false"
+                android:background="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edtDesc" />
@@ -118,7 +124,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:textAllCaps="false"
                 android:text="Cancel"
+                android:textSize="@dimen/button_text_size"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/buttonSave" />

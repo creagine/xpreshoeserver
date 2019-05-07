@@ -34,6 +34,7 @@
             android:layout_marginTop="8dp"
             android:layout_weight="9"
             android:text="Name of Service"
+            android:textColor="@color/primary_text"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/service_image"
             app:layout_constraintTop_toTopOf="parent" />
@@ -46,6 +47,7 @@
             android:layout_marginTop="8dp"
             android:text="999"
             android:textSize="20sp"
+            android:textColor="@color/primary_text"
             app:layout_constraintStart_toEndOf="@+id/service_image"
             app:layout_constraintTop_toBottomOf="@+id/service_name" />
 
