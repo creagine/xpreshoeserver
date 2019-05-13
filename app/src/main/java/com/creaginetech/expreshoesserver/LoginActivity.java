@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.creaginetech.expreshoesserver.Common.Common;
@@ -52,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         Button btnSignUp = findViewById( R.id.btn_signUp );
         Button btnLogin = findViewById( R.id.btn_login );
-        EditText btnReset = findViewById( R.id.btn_reset_password );
+        TextView btnReset = findViewById( R.id.btn_reset_password );
 
         //Get Firebase auth instance
         mAuth = FirebaseAuth.getInstance();

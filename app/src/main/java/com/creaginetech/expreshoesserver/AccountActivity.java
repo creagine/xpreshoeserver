@@ -96,6 +96,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         shopImage.setOnClickListener(this);
 
         loadShopData();
+
     }
 
     private void widgets() {

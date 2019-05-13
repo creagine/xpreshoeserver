@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -36,6 +37,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,6 +63,7 @@ public class HomeNewActivity extends AppCompatActivity
     ImageView shopImage;
 
     //Firebase database
+    FirebaseAuth mAuth;
     FirebaseDatabase database;
     DatabaseReference serviceRef, shopRef;
 
@@ -76,6 +79,8 @@ public class HomeNewActivity extends AppCompatActivity
 
     DrawerLayout drawer;
 
+    private boolean doubleBackToExitPressedOnce = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +89,7 @@ public class HomeNewActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //Init Firebase
+        mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         serviceRef = database.getReference("Service").child(Common.currentUser);
         shopRef = database.getReference("Shop").child(Common.currentUser);
@@ -196,7 +202,6 @@ public class HomeNewActivity extends AppCompatActivity
 //                        serviceDetail.putExtra("ServiceId",adapter.getRef(position).getKey());
                         Common.serviceSelected = adapter.getRef(position).getKey(); // Send service Id to new activity
                         startActivity(serviceDetail);
-                        Toast.makeText(HomeNewActivity.this, "id " + getRef(position).getKey(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -229,13 +234,31 @@ public class HomeNewActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
+
+        if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             finishAffinity();
+            return;
         }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//            finishAffinity();
+//        }
 
     }
 
@@ -279,13 +302,14 @@ public class HomeNewActivity extends AppCompatActivity
         } else if (id == R.id.nav_message) {
             Intent orderIntent = new Intent(HomeNewActivity.this,SendMessageActivity.class);
             startActivity(orderIntent);
-//
-//        } else if (id == R.id.nav_log_out) {
-//            //Logout
-//            Intent signIn = new Intent(HomeActivity.this,SignInActivity.class);
-//            signIn.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(signIn);
-//
+
+        } else if (id == R.id.nav_sign_out) {
+            //Logout
+            mAuth.signOut();
+            Intent orderIntent = new Intent(HomeNewActivity.this,LoginActivity.class);
+            startActivity(orderIntent);
+            finishAffinity();
+
         }
 
 

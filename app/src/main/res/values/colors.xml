@@ -11,7 +11,8 @@
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="icons">#212121</color>
-    c
+    <color name="colorView">#BDBDBD</color>
+
 
     <color name="btnSignUp">#39796b</color>
     <color name="btnSignActive">#A9D440</color>
