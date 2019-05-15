@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFC107</color>
+    <color name="colorPrimaryDark">#FFA000</color>
+    <color name="colorAccent">#4caf50</color>
+    <color name="colorBackground">#f3f4f8</color>
+    <color name="colorButtonText">#343641</color>
+    <color name="searchBackground">#ededed</color>
+    <color name="collapseColorScrim">#0e0d0e</color>
+    <color name="primary_light">#FFECB3</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#212121</color>
+
+    <color name="colorView">#BDBDBD</color>
+
+    <color name="btnSignUp">#39796b</color>
+    <color name="btnSignActive">#A9D440</color>
+
+    <color name="overlayBackground">#7f333639</color>
+    <color name="overlayActionBar">#0e0d0e</color>
+
+    <color name="bgRowBackground">#8CFA315B</color>
+</resources>
