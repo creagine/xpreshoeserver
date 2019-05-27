@@ -17,17 +17,17 @@ class MyViewHolder extends RecyclerView.ViewHolder {
 
     public MyViewHolder(View itemView) {
         super(itemView);
-        name = (TextView)itemView.findViewById(R.id.product_name);
-        quantity = (TextView)itemView.findViewById(R.id.product_quantity);
-        price = (TextView)itemView.findViewById(R.id.product_price);
-        discount = (TextView)itemView.findViewById(R.id.product_discount);
+        name = itemView.findViewById(R.id.product_name);
+        quantity = itemView.findViewById(R.id.product_quantity);
+        price = itemView.findViewById(R.id.product_price);
+        discount = itemView.findViewById(R.id.product_discount);
     }
 }
 
 
 public class OrderDetailAdapter extends RecyclerView.Adapter<MyViewHolder>{
 
-    List<Order> myOrders;
+    private List<Order> myOrders;
 
     public OrderDetailAdapter(List<Order> myOrders) {
         this.myOrders = myOrders;

@@ -30,6 +30,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
@@ -62,7 +63,8 @@ public class OrderStatusActivity extends AppCompatActivity {
 
         //init firebase database
         mFirebaseInstance = FirebaseDatabase.getInstance();
-        orderReference = mFirebaseInstance.getReference("order").child("01");
+
+        orderReference = mFirebaseInstance.getReference("Order");
 
         //Init fcm push notif
         mService = Common.getFCMClient();
@@ -81,9 +83,11 @@ public class OrderStatusActivity extends AppCompatActivity {
     //method load order
     private void loadOrder() {
 
+        Query query = orderReference.orderByChild("shopId").equalTo(Common.currentUser);
+
         //firebase recycler builder
         FirebaseRecyclerOptions<Request> options = new FirebaseRecyclerOptions.Builder<Request>()
-                .setQuery(orderReference,Request.class)
+                .setQuery(query,Request.class)
                 .build();
 
         //init recycler adapter

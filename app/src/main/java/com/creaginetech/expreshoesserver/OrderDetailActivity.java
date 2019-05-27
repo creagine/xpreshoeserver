@@ -11,9 +11,9 @@ import com.creaginetech.expreshoesserver.ViewHolder.OrderDetailAdapter;
 
 public class OrderDetailActivity extends AppCompatActivity {
 
-    TextView order_id,order_phone,order_address,order_total,order_comment;
+    TextView order_id, order_phone, order_address, order_total, order_comment;
     String order_id_value="";
-    RecyclerView lstFoods;
+    RecyclerView listFoods;
     RecyclerView.LayoutManager layoutManager;
 
     @Override
@@ -22,16 +22,16 @@ public class OrderDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_detail);
 
         //cp 21
-        order_id = (TextView)findViewById(R.id.order_id);
-        order_phone = (TextView)findViewById(R.id.order_phone);
-        order_address = (TextView)findViewById(R.id.order_address);
-        order_total = (TextView)findViewById(R.id.order_total);
-        order_comment = (TextView)findViewById(R.id.order_comment );
+        order_id = findViewById(R.id.order_id);
+        order_phone = findViewById(R.id.order_phone);
+        order_address = findViewById(R.id.order_address);
+        order_total = findViewById(R.id.order_total);
+        order_comment = findViewById(R.id.order_comment );
 
-        lstFoods = (RecyclerView)findViewById(R.id.lstFoods);
-        lstFoods.setHasFixedSize(true);
+        listFoods = findViewById(R.id.lstFoods);
+        listFoods.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
-        lstFoods.setLayoutManager(layoutManager);
+        listFoods.setLayoutManager(layoutManager);
 
         if (getIntent() != null)
             order_id_value = getIntent().getStringExtra("OrderId");
@@ -43,9 +43,10 @@ public class OrderDetailActivity extends AppCompatActivity {
         order_address.setText(Common.currentRequest.getAddress());
         order_comment.setText(Common.currentRequest.getComment());
 
-        OrderDetailAdapter adapter = new OrderDetailAdapter(Common.currentRequest.getFoods());
+        //TODO CEK INI< TERAPIN DI ORDER DETAIL CLIENT
+        OrderDetailAdapter adapter = new OrderDetailAdapter(Common.currentRequest.getItems());
         adapter.notifyDataSetChanged();
-        lstFoods.setAdapter(adapter);
+        listFoods.setAdapter(adapter);
 
     }
 }

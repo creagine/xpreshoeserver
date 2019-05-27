@@ -9,19 +9,19 @@ public class Request {
     private String total;
     private String status;
     private String comment;
-    private List<Order> foods; // list of food order
+    private List<Order> items; // list of food order
 
     public Request() {
     }
 
-    public Request(String phone, String name, String address, String total, String status, String comment, List<Order> foods) {
+    public Request(String phone, String name, String address, String total, String status, String comment, List<Order> items) {
         this.phone = phone;
         this.name = name;
         this.address = address;
         this.total = total;
         this.status = status;
         this.comment = comment;
-        this.foods = foods;
+        this.items = items;
     }
 
     public String getPhone() {
@@ -72,11 +72,11 @@ public class Request {
         this.comment = comment;
     }
 
-    public List<Order> getFoods() {
-        return foods;
+    public List<Order> getItems() {
+        return items;
     }
 
-    public void setFoods(List<Order> foods) {
-        this.foods = foods;
+    public void setItems(List<Order> items) {
+        this.items = items;
     }
 }
